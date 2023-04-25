@@ -2,6 +2,8 @@
  * Copyright (c) 2021 Ian Clement. All rights reserved.
  */
 
+import com.sun.source.tree.Tree;
+
 /**
  * An implementation of the Set API using a binary search tree.
  *
@@ -13,8 +15,19 @@ public class TreeSet<T extends Comparable<T>> implements Set<T> {
 	public Node<T> root;
 	private int size;
 
+
+	public TreeSet(){
+		root = null;
+		size = 0;
+	}
+
 	@Override
 	public boolean add(T element) {
+		if(root == null){
+			root = new Node<>(element);
+			size++;
+			return true;
+		}
 		return add(root, element);
 	}
 
@@ -27,7 +40,31 @@ public class TreeSet<T extends Comparable<T>> implements Set<T> {
 	 * @return true if element is added, false if it is already in the tree.
 	 */
 	private boolean add(Node<T> current, T element) {
-		return false;
+		//If the element doesn't exist yet
+		//Search for any existing element corresponding to the passed element
+		//in the parameters
+		int cmp = current.element.compareTo(element);
+		if(cmp == 0){
+			return false;
+		}
+		else if (cmp > 0){
+			if (current.left == null){
+				current.left = new Node<>(element);
+				size++;
+				return true;
+			}
+			else
+				return add(current.left,element);
+		}
+		else{
+			if (current.right == null){
+				current.right = new Node<>(element);
+				size++;
+				return true;
+			}
+			else
+				return add(current.right, element);
+		}
 	}
 
 	@Override
@@ -45,9 +82,22 @@ public class TreeSet<T extends Comparable<T>> implements Set<T> {
 	 * @return
 	 */
 	private boolean contains(Node<T> current, T element) {
-		return false;
-	}
+		if(current == null)
+			return false;
 
+		int cmp = current.element.compareTo(element);
+
+		//If it found the element
+		if(cmp == 0){
+			return true;
+		}
+		else if (cmp > 0){
+			return contains(current.left,element);
+		}
+		else{
+			return contains(current.right, element);
+		}
+	}
 	@Override
 	public boolean containsAll(Set<T> rhs) {
 		return false;
